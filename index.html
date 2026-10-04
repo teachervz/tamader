@@ -72,6 +72,17 @@ input{font-family:inherit;-webkit-user-select:text;user-select:text}
 .title{font-size:66px;font-weight:900;color:var(--pdd);line-height:1.25}
 .title::after{content:"";display:block;width:120px;height:8px;border-radius:9px;margin-top:10px;
   background:linear-gradient(90deg,var(--pink),var(--p2))}
+.video-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.video-wrap video{width:100%;height:100%;object-fit:contain;border-radius:28px;background:#000;box-shadow:var(--shadow-s)}
+.t-video .slide-inner{inset:30px 60px 90px;gap:12px}
+.t-video .title{font-size:44px}
+.t-video .title::after{display:none}
+.imgtext{flex:1;min-height:0;display:flex;align-items:center;gap:60px}
+.imgtext .it-text{flex:1;font-size:40px;font-weight:700;line-height:1.8;color:var(--pdd)}
+.imgtext .it-text p{margin:0 0 18px}
+.imgtext .it-q{background:#fff;border:3px solid var(--p2);border-radius:28px;padding:22px 30px;color:var(--pd);font-weight:900;box-shadow:var(--shadow-s)}
+.imgtext .it-img{flex:0 0 46%;height:100%;display:flex;align-items:center;justify-content:center}
+.imgtext .it-img img{max-width:100%;max-height:100%;border-radius:28px;box-shadow:var(--shadow-s);background:#fff}
 .lead{font-size:36px;color:var(--muted);font-weight:700;line-height:1.5}
 .lead.ok-text{color:var(--ok)}
 .center-row{display:flex;justify-content:center;gap:20px}
@@ -561,7 +572,7 @@ body.idle #hint{opacity:0}
    • أنواع الشرائح (type):
        title, mcq, objectives, brainstorm, blanks, cards, order, footprints,
        sort, reveal, terminal, tps, compare, match, tf, groups, challenge,
-       review, leaderboard, closing
+       review, leaderboard, closing, video, imgtext
    • نظام التنافس: بعد كل إجابة صحيحة تظهر نافذة «أي مجموعة أجابت؟»
      لتضغطي على لون المجموعة فتُضاف لها النقاط. ويمكن تعديل النقاط يدويًا من زر 🏆
    • في الأسئلة: answer = رقم الإجابة الصحيحة بدءًا من 0 (الخيار الأول = 0).
@@ -576,14 +587,13 @@ const LESSON = {
   school:   'الثانوية العاشرة بسكاكا',
   // 🏆 المجموعات الثماني المتنافسة (الاسم + الرمز + اللون)
   teams: [
-    { name:'الدرع',   icon:'🛡️', color:'#7C3AED' },  // بنفسجي
-    { name:'المفتاح', icon:'🔑', color:'#EC4899' },  // وردي
-    { name:'الشيفرة', icon:'💻', color:'#14B8A6' },  // فيروزي
-    { name:'الرادار', icon:'📡', color:'#F97316' },  // برتقالي
-    { name:'القفل',   icon:'🔒', color:'#3B82F6' },  // أزرق
-    { name:'البوصلة', icon:'🧭', color:'#22C55E' },  // أخضر
-    { name:'الصقر',   icon:'🦅', color:'#EAB308' },  // أصفر
-    { name:'النجمة',  icon:'⭐', color:'#EF4444' }   // أحمر
+    { name:'كود القوة',   icon:'🛡️', color:'#7C3AED' },  // بنفسجي
+    { name:'عواصف التقنية', icon:'🌪️', color:'#EC4899' },  // وردي
+    { name:'سيطرة النظام', icon:'💻', color:'#14B8A6' },  // فيروزي
+    { name:'عقول سيبرانية', icon:'🧠', color:'#F97316' },  // برتقالي
+    { name:'شفرة التميز',   icon:'🔒', color:'#3B82F6' },  // أزرق
+    { name:'عقول رقمية', icon:'👩🏻‍💻', color:'#22C55E' },  // أخضر
+
   ],
   defaultPoints: 1   // النقاط الافتراضية لكل إجابة صحيحة (ويمكن وضع points:2 داخل أي شريحة)
 };
@@ -601,6 +611,14 @@ const SLIDES = [
   /* 1) الشريحة الترحيبية */
   { type:'title', anim:'zoom',
     subtitle:'مهمتكِ اليوم: أن تفكّري كـ <b>محللة أمن سيبراني</b> 🕵️‍♀️ تحمي البيانات وتكشف التهديدات' },
+
+  /* 🎬 فيديو تمهيدي */
+  { type:'video', tag:'🎬 فيديو تمهيدي', title:'شاهدي معنا', anim:'fade', src:'intro.mp4' },
+
+  /* 🕌 هرم ماسلو والأمان في الإسلام */
+  { type:'imgtext', tag:'🕌 الأمان في الإسلام', title:'هرم ماسلو للاحتياجات الإنسانية', anim:'fade', img:'maslu.jpg',
+    text:'<p>طالبتي الجميلة 🌸: أمامكِ <b>هرم ماسلو</b> للاحتياجات الإنسانية، وكما نلاحظ فإن <b>الأمان</b> من أهم الاحتياجات الأساسية في الهرم؛ لذلك ديننا الإسلامي اعتنى بهذا الجانب في الكثير من الآيات والأحاديث الشريفة.</p>',
+    question:'✋ اذكري دليلًا على عناية الإسلام بهذا الجانب.' },
 
   /* 2) تمهيد بموقف واقعي — ماذا تتوقعين؟ */
   { type:'mcq', tag:'🔮 تمهيد: ماذا ستفعلين؟', title:'موقف حقيقي… يحدث كل يوم',
@@ -641,6 +659,9 @@ const SLIDES = [
     text:'هو حماية [الشبكات] وأنظمة تقنية المعلومات والأنظمة التشغيلية ومكوناتها من [أجهزة] و[برمجيات]، وما تقدمه من خدمات وما تحتويه من [بيانات]، من أي [اختراق] أو تعطيل أو تعديل أو دخول أو استخدام أو استغلال غير مشروع.',
     note:'<span class="ni">🏛️</span><div><b>الهيئة الوطنية للأمن السيبراني</b> تأسست بأمر ملكي، وهي الجهة المختصة والمرجع الوطني في شؤون الأمن السيبراني بالمملكة.</div>' },
 
+  /* 🎬 فيديو الأمن السيبراني */
+  { type:'video', tag:'🎬 فيديو', title:'الأمن السيبراني', anim:'fade', src:'cyber.mp4' },
+
   /* 6) ماذا تتوقعين؟ */
   { type:'mcq', tag:'🔮 ماذا تتوقعين؟', title:'المملكة على خريطة الأمن السيبراني العالمية', anim:'fade',
     scene:`<div class="scene-card"><div class="sc-big">🏆</div><div class="sc-t">المؤشر العالمي<br>للأمن السيبراني</div><div class="sc-s">Global Cybersecurity Index – GCI</div></div>`,
@@ -648,11 +669,11 @@ const SLIDES = [
     options:[
       { icon:'🏅', t:'المركز الخامس' },
       { icon:'🏅', t:'المركز العاشر' },
-      { icon:'🏅', t:'المركز الأول' },
+      { icon:'🏅', t:'المركز الثاني' },
       { icon:'🏅', t:'المركز العشرون' }
     ],
     answer:2,
-    explain:'حافظت المملكة على <b>المركز الأول عالميًا</b> 🥇، وصُنّفت ضمن الفئة الأولى <b>«النموذج المحتذى به»</b> في مؤشر الاتحاد الدولي للاتصالات (ITU).' },
+    explain:'حققت المملكة <b>المركز الثاني عالميًا</b> 🥈 في المؤشر العالمي للأمن السيبراني ضمن الكتاب السنوي للتنافسية العالمية 2026.' },
 
   /* 7) بطاقات: مبادرات المملكة */
   { type:'cards', tag:'🃏 بطاقات الاكتشاف', title:'كيف وصلت المملكة للصدارة؟',
@@ -947,7 +968,7 @@ const SLIDES = [
     center:{ icon:'🧠', t:'خريطة الأمن السيبراني', d:'اضغطي على أي فكرة لمراجعتها، واطلبي من زميلتكِ شرحها قبل الضغط!' },
     nodes:[
       { icon:'🔄', t:'دورة حياة النظام', color:'#7C3AED', d:'الأمن يُدمج في المراحل الست: التحليل، التصميم، التطوير، الاختبارات، التنفيذ، الصيانة.' },
-      { icon:'🏛️', t:'المملكة والأمن السيبراني', color:'#10B981', d:'الهيئة الوطنية NCA، المركز الأول عالميًا في GCI، ومبادرات مثل سايبرك والتمارين الوطنية.' },
+      { icon:'🏛️', t:'المملكة والأمن السيبراني', color:'#10B981', d:'الهيئة الوطنية NCA، المركز الثاني عالميًا في المؤشر العالمي للأمن السيبراني، ومبادرات مثل سايبرك والتمارين الوطنية.' },
       { icon:'👣', t:'البصمة الرقمية', color:'#EC4899', d:'نشطة: بإرادتك (منشورات، نماذج). غير نشطة: دون قصد (الموقع، الكوكيز).' },
       { icon:'🗂️', t:'سجلات الخادم', color:'#0EA5E9', d:'تسجّل IP ووقت الاتصال وطريقة الطلب والملف المطلوب… ولا يراها إلا مالك الموقع.' },
       { icon:'🧱', t:'جدار الحماية والمكافحة', color:'#F59E0B', d:'الجدار يراقب الشبكة ويمنع المتسللين، والمكافحة تفحص الملفات وتزيل البرامج الضارة.' },
@@ -1472,6 +1493,18 @@ R.review = {
   }
 };
 
+/* نص + صورة */
+R.imgtext = {
+  html:s=>`<div class="imgtext">
+    <div class="it-text rv">${s.text}${s.question?`<div class="it-q">${s.question}</div>`:''}</div>
+    <div class="it-img rv"><img src="${s.img}" alt=""></div></div>`
+};
+
+/* فيديو */
+R.video = {
+  html:s=>`<div class="video-wrap rv"><video src="${s.src}" controls playsinline preload="metadata"></video></div>`
+};
+
 /* الختام */
 R.closing = {
   html:s=>`<div class="closing"><div class="cl-shield rv">🛡️</div><h1 class="cl-title rv">${s.title}</h1><p class="cl-msg rv">${s.message}</p>
@@ -1504,7 +1537,7 @@ $('#brand').textContent=`${LESSON.lessonNo}: ${LESSON.title}`;
 function go(n){
   if(n<0||n>=slides.length) return;
   const dir=n>=current?1:-1, old=slides[current].el, nw=slides[n].el;
-  if(n!==current){ old.classList.remove('active'); retrigger(old,'leaving'); setTimeout(()=>old.classList.remove('leaving'),460); }
+  if(n!==current){ $$('video',old).forEach(v=>v.pause()); old.classList.remove('active'); retrigger(old,'leaving'); setTimeout(()=>old.classList.remove('leaving'),460); }
   const anim=slides[n].cfg.anim||ANIMS[n%ANIMS.length];
   nw.classList.remove('in-fade','in-zoom','in-slide-next','in-slide-prev','active'); void nw.offsetWidth;
   nw.classList.add('active','in-'+(anim==='slide'?(dir>0?'slide-next':'slide-prev'):anim));
